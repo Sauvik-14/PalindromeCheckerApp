@@ -1,83 +1,55 @@
 import java.util.*;
 
-// Strategy Interface
-interface PalindromeStrategy {
-    boolean check(String word);
-}
+public class UseCase13PalindromeCheckerApp {
 
-// Stack Strategy
-class StackStrategy implements PalindromeStrategy {
+    // Simple Two Pointer
+    public static boolean twoPointer(String word) {
+        int start = 0;
+        int end = word.length() - 1;
 
-    public boolean check(String word) {
+        while (start < end) {
+            if (word.charAt(start) != word.charAt(end))
+                return false;
+            start++;
+            end--;
+        }
+        return true;
+    }
+
+    // Stack Approach
+    public static boolean stackMethod(String word) {
         Stack<Character> stack = new Stack<>();
 
-        for (char c : word.toCharArray()) {
+        for (char c : word.toCharArray())
             stack.push(c);
-        }
 
         for (char c : word.toCharArray()) {
             if (c != stack.pop())
                 return false;
         }
-
         return true;
     }
-}
-
-// Deque Strategy
-class DequeStrategy implements PalindromeStrategy {
-
-    public boolean check(String word) {
-        Deque<Character> deque = new LinkedList<>();
-
-        for (char c : word.toCharArray()) {
-            deque.addLast(c);
-        }
-
-        while (deque.size() > 1) {
-            if (deque.removeFirst() != deque.removeLast())
-                return false;
-        }
-
-        return true;
-    }
-}
-
-// Context Class
-class PalindromeContext {
-
-    private PalindromeStrategy strategy;
-
-    public PalindromeContext(PalindromeStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public boolean execute(String word) {
-        return strategy.check(word);
-    }
-}
-
-public class UseCase12PalindromeCheckerApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Welcome to the Palindrome Checker Management System");
+        System.out.println("Welcome to the Palindrome Checker Performance Test");
         System.out.println("Version: 1.0");
 
         String word = "madam";
 
-        // Inject strategy at runtime
-        PalindromeStrategy strategy = new StackStrategy();  
-        // Try: new DequeStrategy()
+        // Two Pointer timing
+        long start1 = System.nanoTime();
+        twoPointer(word);
+        long end1 = System.nanoTime();
 
-        PalindromeContext context = new PalindromeContext(strategy);
+        // Stack timing
+        long start2 = System.nanoTime();
+        stackMethod(word);
+        long end2 = System.nanoTime();
 
-        if (context.execute(word)) {
-            System.out.println(word + " is a Palindrome.");
-        } else {
-            System.out.println(word + " is NOT a Palindrome.");
-        }
+        System.out.println("Two Pointer Time: " + (end1 - start1) + " ns");
+        System.out.println("Stack Method Time: " + (end2 - start2) + " ns");
 
-        System.out.println("System execution completed.");
+        System.out.println("Performance comparison completed.");
     }
 }
